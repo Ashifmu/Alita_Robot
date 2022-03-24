@@ -36,34 +36,6 @@ async def gen_cmds_kb(m: Message or CallbackQuery):
     return [kb[i : i + 3] for i in range(0, len(kb), 3)]
 
 
-async def gen_start_kb(q: Message or CallbackQuery):
-    """Generate keyboard with start menu options."""
-    return ikb(
-        [
-            [
-                (
-                    f"➕ {(tlang(q, 'start.add_chat_btn'))}",
-                    f"https://t.me/{Config.BOT_USERNAME}?startgroup=new",
-                    "url",
-                ),
-                (
-                    f"{(tlang(q, 'start.support_group'))} 👥",
-                    f"https://t.me/{SUPPORT_GROUP}",
-                    "url",
-                ),
-            ],
-            [(f"📚 {(tlang(q, 'start.commands_btn'))}", "commands")],
-            [
-                (f"🌐 {(tlang(q, 'start.language_btn'))}", "chlang"),
-                (
-                    f"🗃️ {(tlang(q, 'start.source_code'))}",
-                    "https://github.com/DivideProjects/Alita_Robot",
-                    "url",
-                ),
-            ],
-        ],
-    )
-
 
 async def get_private_note(c: Alita, m: Message, help_option: str):
     """Get the note in pm of user, with parsing enabled."""
