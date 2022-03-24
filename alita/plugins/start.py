@@ -9,8 +9,6 @@ from alita.utils.custom_filters import command
 from alita.utils.kbhelpers import ikb
 from alita.utils.start_utils import (
     gen_cmds_kb,
-    gen_start_kb,
-    get_help_msg,
     get_private_note,
     get_private_rules,
 )
@@ -47,12 +45,7 @@ async def close_admin_callback(_, q: CallbackQuery):
     return
 
 
-@Alita.on_message(
-    command("start") & (filters.group | filters.private),
-)
-async def start(c: Alita, m: Message):
-    if m.chat.type == "private":
-        if len(m.text.split()) > 1:
+
             help_option = (m.text.split(None, 1)[1]).lower()
 
             if help_option.startswith("note") and (
@@ -133,63 +126,7 @@ async def commands_menu(_, q: CallbackQuery):
     return
 
 
-@Alita.on_message(command("help"))
-async def help_menu(_, m: Message):
-    if len(m.text.split()) >= 2:
-        help_option = (m.text.split(None, 1)[1]).lower()
-        help_msg, help_kb = await get_help_msg(m, help_option)
 
-        if not help_msg:
-            LOGGER.error(f"No help_msg found for help_option - {help_option}!!")
-            return
-
-        LOGGER.info(
-            f"{m.from_user.id} fetched help for '{help_option}' text in {m.chat.id}",
-        )
-        if m.chat.type == "private":
-            await m.reply_text(
-                help_msg,
-                parse_mode="markdown",
-                reply_markup=ikb(help_kb),
-                quote=True,
-                disable_web_page_preview=True,
-            )
-        else:
-            await m.reply_text(
-                (tlang(m, "start.public_help").format(help_option=help_option)),
-                reply_markup=ikb(
-                    [
-                        [
-                            (
-                                "Help",
-                                f"t.me/{Config.BOT_USERNAME}?start={help_option}",
-                                "url",
-                            ),
-                        ],
-                    ],
-                ),
-            )
-    else:
-        if m.chat.type == "private":
-            keyboard = ikb(
-                [
-                    *(await gen_cmds_kb(m)),
-                    [(f"« {(tlang(m, 'general.back_btn'))}", "start_back")],
-                ],
-            )
-            msg = tlang(m, "general.commands_available")
-        else:
-            keyboard = ikb(
-                [[("Help", f"t.me/{Config.BOT_USERNAME}?start=help", "url")]],
-            )
-            msg = tlang(m, "start.pm_for_help")
-
-        await m.reply_text(
-            msg,
-            reply_markup=keyboard,
-        )
-
-    return
 
 
 @Alita.on_callback_query(filters.regex("^get_mod."))
